@@ -1,5 +1,6 @@
 import 'package:eng_alaa_hammed/core/config/config.dart';
 import 'package:eng_alaa_hammed/core/theme/app_theme.dart';
+import 'package:eng_alaa_hammed/features/videos/presentation/views/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -22,25 +23,6 @@ class MyApp extends StatelessWidget {
       supportedLocales: Config.supportedLocales,
       builder: Config.builder,
       home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('الرئيسية'),
-      ),
-      body: Center(
-        child: Text(
-          'مرحبًا بك!',
-          style: Theme.of(context).textTheme.displayLarge,
-        ),
-      ),
     );
   }
 }
