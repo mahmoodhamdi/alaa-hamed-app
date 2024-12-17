@@ -4,7 +4,7 @@ import 'package:eng_alaa_hammed/core/enums/status.dart';
 import 'package:eng_alaa_hammed/core/formatters/formatter.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_cubit.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_state.dart';
-import 'package:eng_alaa_hammed/features/videos/presentation/views/VideoPlayerController.dart';
+import 'package:eng_alaa_hammed/features/videos/presentation/views/video_player_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,7 +47,7 @@ class AllVideosPage extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
-                        state.errorMessage ?? 'Unknown error',
+                        state.errorMessage,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 16),
@@ -83,7 +83,10 @@ class AllVideosPage extends StatelessWidget {
           Icon(
             Icons.video_library,
             size: 80,
-            color: Theme.of(context).primaryColor.withOpacity(0.7),
+            color: Theme.of(context).primaryColor.withValues(
+                  alpha: 0.7,
+
+                ),
           ),
           const SizedBox(height: 16),
           Text(
