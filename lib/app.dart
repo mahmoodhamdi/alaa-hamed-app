@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: Config.localizationsDelegates,
       supportedLocales: Config.supportedLocales,
       builder: Config.builder,
-      home: HomePage(),
+      home: VideoPage(),
     );
   }
 }
