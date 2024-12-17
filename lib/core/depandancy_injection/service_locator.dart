@@ -3,7 +3,7 @@ import 'package:eng_alaa_hammed/features/videos/data/data_sources/youtube_servic
 import 'package:eng_alaa_hammed/features/videos/data/repository/video_repository_impl.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/repository/video_repository.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/usecases/get_videos_use_case.dart';
-import 'package:eng_alaa_hammed/features/videos/presentation/logic/videos_cubit.dart';
+import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;

@@ -1,1 +1,1 @@
-enum VideosStatus { initial, loading, loaded, failure }
+enum AllVideosStatus { initial, loading, loaded, failure }
