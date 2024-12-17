@@ -13,12 +13,12 @@ class YouTubeService {
       LoggerHelper.debug(
           'Calling YouTube API to fetch videos'); // استخدام الـ Logger هنا
       final response = await dioClient.get(
-        '${ApiConstants.baseUrl}/search',
+        '${ApiConstants.baseUrl}search',
         queryParameters: {
           'part': 'snippet',
           'channelId':
               ApiConstants.channelId, // لازم تحط الـ Channel ID بتاعك هنا
-          'maxResults': 20,
+          'maxResults': 10,
           'order': 'date',
           'type': 'video',
           'key': ApiConstants.apiKey, // لازم تحط الـ API Key بتاعك هنا
