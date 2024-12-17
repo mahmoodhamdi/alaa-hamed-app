@@ -1,6 +1,6 @@
 import 'package:eng_alaa_hammed/core/config/config.dart';
 import 'package:eng_alaa_hammed/core/theme/app_theme.dart';
-import 'package:eng_alaa_hammed/features/videos/presentation/views/all_videos_page.dart';
+import 'package:eng_alaa_hammed/features/auth/presentation/views/auth_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'التطبيق الديني',
+      title: 'Eng Alaa Hammed',
       debugShowCheckedModeBanner: false,
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: Config.localizationsDelegates,
       supportedLocales: Config.supportedLocales,
       builder: Config.builder,
-      home: AllVideosPage(),
+      home: AuthView(),
     );
   }
 }

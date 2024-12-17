@@ -82,7 +82,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   'More Details',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-               ],
+              ],
             ),
           ),
         ),
