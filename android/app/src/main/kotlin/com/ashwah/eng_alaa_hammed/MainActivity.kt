@@ -1,4 +1,4 @@
-package com.ashwah.eng_alaa_hammed_new
+package com.ashwah.eng_alaa_hammed
 
 import io.flutter.embedding.android.FlutterActivity
 
