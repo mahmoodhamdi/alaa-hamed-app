@@ -91,14 +91,16 @@ New Failure classes added:
 
 ---
 
-## Phase 3: Code Quality Enhancements
+## Phase 3: Code Quality Enhancements - COMPLETED
 
 ### 3.1 Missing const Constructors
 **Files**: Multiple widget files
 **Issue**: Some widgets can use `const` constructors but don't
+**Fix**: Added `const` to YoutubePlayerFlags, TextStyle, SizedBox, Icon, CircularProgressIndicator
 
-- [ ] Add const to YoutubePlayerFlags
-- [ ] Add const to TextStyle where applicable
+- [x] Add const to YoutubePlayerFlags
+- [x] Add const to TextStyle where applicable
+- [x] Add const to SizedBox and Icon widgets
 
 ### 3.2 Hardcoded Strings
 **Files**:
@@ -106,16 +108,23 @@ New Failure classes added:
 - `lib/features/auth/presentation/views/auth_view.dart` - English text
 
 **Issue**: Mixed languages, hardcoded strings instead of localization
+**Fix**: Created `AppStrings` class in `lib/core/constants/strings.dart` with all UI strings
 
-- [ ] Move all strings to localization files
-- [ ] Create AppLocalizations class
+- [x] Move all strings to AppStrings class
+- [x] Create centralized strings file with Arabic and English support
+- [x] Update all UI files to use AppStrings
 
 ### 3.3 API Key Exposed in Code
 **File**: `lib/core/constants/api_constants.dart`
 **Issue**: API key is hardcoded in source code
+**Fix**: Moved API keys to `.env` file using `flutter_dotenv`
 
-- [ ] Move API key to environment variables
-- [ ] Add .env file support (flutter_dotenv)
+- [x] Add flutter_dotenv dependency
+- [x] Create .env file with API keys
+- [x] Create .env.example for git
+- [x] Add .env to .gitignore
+- [x] Update api_constants.dart to read from environment
+- [x] Update main.dart to load .env on startup
 
 ### 3.4 NoParams Class - COMPLETED
 **File**: `lib/core/usecase/usecase.dart`
@@ -162,6 +171,7 @@ New Failure classes added:
 - [ ] `VideoRepositoryImpl` - test getVideos
 - [ ] `GoogleAuthRepositoryImpl` - test authentication
 - [x] `Failure` classes - test all failure types
+- [x] `AppStrings` - test all string constants
 
 ### 5.2 Widget Tests Needed
 
@@ -189,13 +199,14 @@ New Failure classes added:
 
 | Test File | Tests |
 |-----------|-------|
+| `strings_test.dart` | 22 tests |
 | `usecase_test.dart` | 7 tests |
 | `failures_test.dart` | 13 tests |
 | `video_model_test.dart` | 6 tests |
 | `video_test.dart` | 4 tests |
 | `get_videos_use_case_test.dart` | 6 tests |
 | `widget_test.dart` | 1 test (placeholder) |
-| **Total** | **37 tests** |
+| **Total** | **59 tests** |
 
 ---
 

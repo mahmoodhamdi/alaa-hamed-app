@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eng_alaa_hammed/core/constants/strings.dart';
 import 'package:eng_alaa_hammed/core/depandancy_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/core/enums/status.dart';
 import 'package:eng_alaa_hammed/core/formatters/formatter.dart';
@@ -17,7 +18,7 @@ class AllVideosPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'كل الفيديوهات',
+            AppStrings.allVideos,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -40,10 +41,10 @@ class AllVideosPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, color: Colors.red, size: 60),
+                      const Icon(Icons.error_outline, color: Colors.red, size: 60),
                       const SizedBox(height: 16),
                       Text(
-                        'Failed to load videos',
+                        AppStrings.failedToLoadVideos,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
@@ -54,7 +55,7 @@ class AllVideosPage extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () =>
                             context.read<VideoCubit>().fetchVideos(),
-                        child: const Text('Retry'),
+                        child: const Text(AppStrings.retry),
                       )
                     ],
                   ),
@@ -85,17 +86,16 @@ class AllVideosPage extends StatelessWidget {
             size: 80,
             color: Theme.of(context).primaryColor.withValues(
                   alpha: 0.7,
-
                 ),
           ),
           const SizedBox(height: 16),
           Text(
-            'No Videos Available',
+            AppStrings.noVideosAvailable,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           Text(
-            'Check back later for new content',
+            AppStrings.checkBackLater,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],

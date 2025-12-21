@@ -1,3 +1,4 @@
+import 'package:eng_alaa_hammed/core/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -25,7 +26,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     super.initState();
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
-      flags: YoutubePlayerFlags(
+      flags: const YoutubePlayerFlags(
         autoPlay: true,
         mute: false,
         enableCaption: true,
@@ -52,7 +53,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 widget.title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -74,12 +75,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Published on: ${_formatDate(widget.publishedAt)}',
+                  '${AppStrings.publishedOn}: ${_formatDate(widget.publishedAt)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
-                  'More Details',
+                  AppStrings.moreDetails,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],

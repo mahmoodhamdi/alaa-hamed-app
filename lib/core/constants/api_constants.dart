@@ -1,5 +1,9 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiConstants {
-  static const String apiKey = 'AIzaSyA9Ps9aOlvsv8Bab3Jss5PzqecYh8rKm3U';
+  ApiConstants._();
+
+  static String get apiKey => dotenv.env['YOUTUBE_API_KEY'] ?? '';
   static const String baseUrl = 'https://www.googleapis.com/youtube/v3/';
-  static const String channelId = 'UCwLgnvgp32d8bHtQljXqWeQ'; // قناة علاء حامد
+  static String get channelId => dotenv.env['YOUTUBE_CHANNEL_ID'] ?? '';
 }

@@ -1,4 +1,4 @@
-// lib/features/auth/presentation/screens/auth_screen.dart
+import 'package:eng_alaa_hammed/core/constants/strings.dart';
 import 'package:eng_alaa_hammed/core/depandancy_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_state.dart';
@@ -13,22 +13,22 @@ class AuthView extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<AuthCubit>(),
       child: Scaffold(
-        appBar: AppBar(title: Text('Google Sign In')),
+        appBar: AppBar(title: const Text(AppStrings.googleSignIn)),
         body: Center(
           child: BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               if (state is AuthLoading) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (state is AuthFailure) {
-                return Text('Error: ${state.message}');
+                return Text('${AppStrings.error}: ${state.message}');
               } else if (state is AuthSuccess) {
-                return Text('Signed in! Access Token: ${state.accessToken}');
+                return Text('${AppStrings.signedIn} ${AppStrings.accessToken}: ${state.accessToken}');
               }
               return ElevatedButton(
                 onPressed: () {
                   context.read<AuthCubit>().authenticateWithGoogle();
                 },
-                child: Text('Sign In with Google'),
+                child: const Text(AppStrings.signInWithGoogle),
               );
             },
           ),
