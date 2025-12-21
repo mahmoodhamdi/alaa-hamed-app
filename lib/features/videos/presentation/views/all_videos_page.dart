@@ -9,8 +9,29 @@ import 'package:eng_alaa_hammed/features/videos/presentation/views/video_player_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AllVideosPage extends StatelessWidget {
+/// AllVideosPage displays a list of videos from YouTube channel.
+/// Uses StatefulWidget to properly manage BlocProvider lifecycle.
+class AllVideosPage extends StatefulWidget {
   const AllVideosPage({super.key});
+
+  @override
+  State<AllVideosPage> createState() => _AllVideosPageState();
+}
+
+class _AllVideosPageState extends State<AllVideosPage> {
+  late final VideoCubit _videoCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _videoCubit = getIt<VideoCubit>()..fetchVideos();
+  }
+
+  @override
+  void dispose() {
+    _videoCubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +47,8 @@ class AllVideosPage extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
         ),
-        body: BlocProvider(
-          create: (context) => getIt<VideoCubit>()..fetchVideos(),
+        body: BlocProvider.value(
+          value: _videoCubit,
           child: BlocBuilder<VideoCubit, AllVideosState>(
             builder: (context, state) {
               if (state.status == AllVideosStatus.loading) {
@@ -84,9 +105,7 @@ class AllVideosPage extends StatelessWidget {
           Icon(
             Icons.video_library,
             size: 80,
-            color: Theme.of(context).primaryColor.withValues(
-                  alpha: 0.7,
-                ),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
           ),
           const SizedBox(height: 16),
           Text(
@@ -143,6 +162,9 @@ class AllVideosPage extends StatelessWidget {
                     width: 120,
                     height: 90,
                     fit: BoxFit.cover,
+                    memCacheWidth: 240,
+                    memCacheHeight: 180,
+                    fadeInDuration: const Duration(milliseconds: 200),
                     placeholder: (context, url) => const Center(
                         child: CircularProgressIndicator.adaptive()),
                     errorWidget: (context, url, error) =>
