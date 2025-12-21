@@ -1,32 +1,36 @@
 name: eng_alaa_hammed
 description: "A new Flutter project."
-publish_to: 'none' 
+publish_to: 'none'
 version: 1.0.0+1
+
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.10.3
+
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  cupertino_icons:
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
-  flutter_bloc: ^8.1.6
-  logger: ^2.5.0
-  shared_preferences: ^2.3.3
-  dio: ^5.7.0
-  dartz: ^0.10.1
-  equatable: ^2.0.7
-  get_it: ^8.0.3
-  video_player: ^2.9.2
-  youtube_player_flutter: ^9.1.1
-  cached_network_image: ^3.4.1
-  google_sign_in: ^6.2.2
+  intl:
+  flutter_bloc:
+  logger:
+  shared_preferences:
+  dio:
+  dartz:
+  equatable:
+  get_it:
+  video_player:
+  youtube_player_flutter:
+  cached_network_image:
+  google_sign_in:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-flutter:  
+  flutter_lints:
+
+flutter:
   uses-material-design: true
   fonts:
     - family: Cairo

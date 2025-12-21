@@ -14,7 +14,7 @@ class VideoPlayerPage extends StatefulWidget {
       required this.publishedAt});
 
   @override
-  _VideoPlayerPageState createState() => _VideoPlayerPageState();
+  State<VideoPlayerPage> createState() => _VideoPlayerPageState();
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
