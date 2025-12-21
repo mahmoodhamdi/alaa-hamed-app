@@ -183,11 +183,11 @@ New Failure classes added:
 - [x] `AllVideosPage` - test loading, empty, error, loaded states
 - [x] `VideoPlayerPage` - test player initialization, date formatting
 
-### 5.3 Integration Tests Needed
+### 5.3 Integration Tests - COMPLETED
 
-- [ ] Full auth flow test
-- [ ] Video fetch and display flow
-- [ ] Video player navigation
+- [x] Full auth flow test (6 tests)
+- [x] Video fetch and display flow (8 tests)
+- [x] Video player navigation (8 tests)
 
 ---
 
@@ -200,6 +200,8 @@ New Failure classes added:
 ---
 
 ## Test Coverage Summary
+
+### Unit & Widget Tests
 
 | Test File | Tests |
 |-----------|-------|
@@ -217,7 +219,18 @@ New Failure classes added:
 | `all_videos_page_test.dart` | 8 tests |
 | `video_player_page_test.dart` | 8 tests |
 | `widget_test.dart` | 1 test (placeholder) |
-| **Total** | **110 tests** |
+| **Subtotal** | **110 tests** |
+
+### Integration Tests
+
+| Test File | Tests |
+|-----------|-------|
+| `auth_flow_test.dart` | 6 tests |
+| `video_flow_test.dart` | 8 tests |
+| `video_player_navigation_test.dart` | 8 tests |
+| **Subtotal** | **22 tests** |
+
+| **Total Tests** | **132 tests** |
 
 ---
 
@@ -227,7 +240,7 @@ New Failure classes added:
 # Analyze code
 flutter analyze
 
-# Run tests
+# Run unit and widget tests
 flutter test
 
 # Run specific test file
@@ -235,6 +248,12 @@ flutter test test/features/videos/domain/usecases/get_videos_use_case_test.dart
 
 # Run with coverage
 flutter test --coverage
+
+# Run integration tests (requires device/emulator)
+flutter test integration_test/app_test.dart
+
+# Run integration tests on specific device
+flutter test integration_test/app_test.dart -d <device_id>
 
 # Build debug APK
 flutter build apk --debug
