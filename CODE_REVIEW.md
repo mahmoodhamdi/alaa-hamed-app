@@ -177,11 +177,11 @@ New Failure classes added:
 - [x] `Failure` classes - test all failure types
 - [x] `AppStrings` - test all string constants
 
-### 5.2 Widget Tests Needed
+### 5.2 Widget Tests - COMPLETED
 
-- [ ] `AuthView` - test sign-in button, loading state, success state, error state
-- [ ] `AllVideosPage` - test loading, empty, error, loaded states
-- [ ] `VideoPlayerPage` - test player initialization, date formatting
+- [x] `AuthView` - test sign-in button, loading state, success state, error state
+- [x] `AllVideosPage` - test loading, empty, error, loaded states
+- [x] `VideoPlayerPage` - test player initialization, date formatting
 
 ### 5.3 Integration Tests Needed
 
@@ -209,8 +209,11 @@ New Failure classes added:
 | `video_model_test.dart` | 6 tests |
 | `video_test.dart` | 4 tests |
 | `get_videos_use_case_test.dart` | 6 tests |
+| `auth_view_test.dart` | 9 tests |
+| `all_videos_page_test.dart` | 8 tests |
+| `video_player_page_test.dart` | 8 tests |
 | `widget_test.dart` | 1 test (placeholder) |
-| **Total** | **59 tests** |
+| **Total** | **84 tests** |
 
 ---
 
