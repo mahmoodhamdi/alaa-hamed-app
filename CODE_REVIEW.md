@@ -164,16 +164,16 @@ New Failure classes added:
 
 ## Phase 5: Testing Requirements
 
-### 5.1 Unit Tests - PARTIAL
+### 5.1 Unit Tests - COMPLETED
 
 - [x] `UseCase` - test call method
 - [x] `GetVideosUseCase` - test returns videos/failures
-- [ ] `OAuthUseCase` - test authentication flow
+- [x] `OAuthUseCase` - test authentication flow
 - [x] `VideoModel.fromJson` - test JSON parsing
 - [x] `VideoModel.toJson` - test JSON serialization
-- [ ] `DioClient` - test GET/POST methods
-- [ ] `VideoRepositoryImpl` - test getVideos
-- [ ] `GoogleAuthRepositoryImpl` - test authentication
+- [x] `DioClient` - test GET/POST methods
+- [x] `VideoRepositoryImpl` - test getVideos
+- [x] `GoogleAuthRepositoryImpl` - test authentication
 - [x] `Failure` classes - test all failure types
 - [x] `AppStrings` - test all string constants
 
@@ -209,11 +209,15 @@ New Failure classes added:
 | `video_model_test.dart` | 6 tests |
 | `video_test.dart` | 4 tests |
 | `get_videos_use_case_test.dart` | 6 tests |
+| `oauth_use_case_test.dart` | 6 tests |
+| `dio_client_test.dart` | 7 tests |
+| `video_repository_impl_test.dart` | 7 tests |
+| `google_auth_repository_impl_test.dart` | 6 tests |
 | `auth_view_test.dart` | 9 tests |
 | `all_videos_page_test.dart` | 8 tests |
 | `video_player_page_test.dart` | 8 tests |
 | `widget_test.dart` | 1 test (placeholder) |
-| **Total** | **84 tests** |
+| **Total** | **110 tests** |
 
 ---
 
