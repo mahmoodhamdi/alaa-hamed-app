@@ -1,9 +1,30 @@
-// lib/core/error/failures.dart
-class Failure {
+import 'package:equatable/equatable.dart';
+
+abstract class Failure extends Equatable {
   final String message;
-  Failure(this.message);
+
+  const Failure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure([super.message = 'Server error occurred']);
+}
+
+class NetworkFailure extends Failure {
+  const NetworkFailure([super.message = 'Network connection failed']);
+}
+
+class CacheFailure extends Failure {
+  const CacheFailure([super.message = 'Cache error occurred']);
 }
 
 class AuthenticationFailure extends Failure {
-  AuthenticationFailure(super.message);
+  const AuthenticationFailure([super.message = 'Authentication failed']);
+}
+
+class UnexpectedFailure extends Failure {
+  const UnexpectedFailure([super.message = 'An unexpected error occurred']);
 }
