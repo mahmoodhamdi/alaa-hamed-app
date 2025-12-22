@@ -47,3 +47,7 @@ app.*.map.json
 # Environment files
 .env
 *.env.local
+
+# Google OAuth credentials (NEVER commit these)
+client_secret*.json
+*-secret*.json
