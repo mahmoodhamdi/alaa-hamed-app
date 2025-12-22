@@ -51,3 +51,14 @@ app.*.map.json
 # Google OAuth credentials (NEVER commit these)
 client_secret*.json
 *-secret*.json
+
+# Android signing
+*.jks
+*.keystore
+android/key.properties
+android/app/upload-keystore.jks
+
+# iOS signing
+ios/*.mobileprovision
+ios/*.p12
+ios/AuthKey_*.p8
