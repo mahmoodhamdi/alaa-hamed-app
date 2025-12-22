@@ -51,6 +51,10 @@ lib/
 │   │   ├── data/repository/ # GoogleAuthRepositoryImpl
 │   │   ├── domain/          # AuthRepository interface, OAuthUseCase
 │   │   └── presentation/    # AuthCubit, AuthState, AuthView
+│   ├── settings/            # App settings & preferences
+│   │   ├── data/repository/ # SettingsRepositoryImpl (SharedPreferences)
+│   │   ├── domain/          # AppSettings entity, SettingsRepository
+│   │   └── presentation/    # SettingsCubit, SettingsState, SettingsPage
 │   ├── videos/              # YouTube video listing and playback
 │   │   ├── data/            # YouTubeService, VideoModel, VideoRepositoryImpl
 │   │   ├── domain/          # Video entity, VideoRepository, GetVideosUseCase
@@ -119,6 +123,12 @@ test/
 │   │   ├── data/repository/google_auth_repository_impl_test.dart
 │   │   ├── domain/usecases/oauth_use_case_test.dart
 │   │   └── presentation/views/auth_view_test.dart
+│   ├── settings/
+│   │   ├── data/repository/settings_repository_impl_test.dart
+│   │   ├── domain/entities/app_settings_test.dart
+│   │   └── presentation/logic/
+│   │       ├── settings_cubit_test.dart
+│   │       └── settings_state_test.dart
 │   ├── splash/
 │   │   └── views/splash_view_test.dart
 │   └── videos/

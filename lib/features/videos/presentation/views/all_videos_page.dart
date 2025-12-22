@@ -3,6 +3,7 @@ import 'package:eng_alaa_hammed/core/constants/strings.dart';
 import 'package:eng_alaa_hammed/core/dependency_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/core/enums/status.dart';
 import 'package:eng_alaa_hammed/core/formatters/formatter.dart';
+import 'package:eng_alaa_hammed/features/settings/presentation/views/settings_page.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/entities/video.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_cubit.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_state.dart';
@@ -113,6 +114,18 @@ class _AllVideosPageState extends State<AllVideosPage> {
       ),
       centerTitle: true,
       elevation: 0,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.settings),
+          tooltip: AppStrings.settings,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
+            );
+          },
+        ),
+      ],
     );
   }
 
