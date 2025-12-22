@@ -6,13 +6,26 @@ import 'package:eng_alaa_hammed/core/helpers/retry_helper.dart';
 
 import '../../../../core/network/dio_client.dart';
 
-/// Response from YouTube API containing video items and pagination info.
+/// Response from YouTube API containing items and pagination info.
 class YouTubeApiResponse {
   final List<dynamic> items;
   final String? nextPageToken;
   final int totalResults;
 
   YouTubeApiResponse({
+    required this.items,
+    this.nextPageToken,
+    this.totalResults = 0,
+  });
+}
+
+/// Response from YouTube API for playlists.
+class PlaylistsApiResponse {
+  final List<dynamic> items;
+  final String? nextPageToken;
+  final int totalResults;
+
+  PlaylistsApiResponse({
     required this.items,
     this.nextPageToken,
     this.totalResults = 0,
@@ -135,6 +148,133 @@ class YouTubeService {
         return const ServerFailure('Server error');
       default:
         return ServerFailure('Server error: $statusCode');
+    }
+  }
+
+  /// Fetches playlists for the channel with pagination support.
+  /// [pageToken] - Optional token for fetching next page of results.
+  Future<PlaylistsApiResponse> fetchPlaylists({String? pageToken}) async {
+    try {
+      return await RetryHelper.withExponentialBackoff(
+        maxAttempts: _maxRetryAttempts,
+        retryIf: _shouldRetry,
+        fn: () => _fetchPlaylistsInternal(pageToken: pageToken),
+      );
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      LoggerHelper.error('Unexpected error fetching playlists', e);
+      throw const UnexpectedFailure('Failed to load playlists');
+    }
+  }
+
+  /// Internal method that fetches playlists from YouTube API.
+  Future<PlaylistsApiResponse> _fetchPlaylistsInternal(
+      {String? pageToken}) async {
+    LoggerHelper.debug(
+        'Calling YouTube API to fetch playlists${pageToken != null ? " (page: $pageToken)" : ""}');
+
+    final queryParams = <String, dynamic>{
+      'part': 'snippet,contentDetails',
+      'channelId': ApiConstants.channelId,
+      'maxResults': _pageSize,
+      'key': ApiConstants.apiKey,
+    };
+
+    if (pageToken != null) {
+      queryParams['pageToken'] = pageToken;
+    }
+
+    try {
+      final response = await dioClient.get(
+        '${ApiConstants.baseUrl}playlists',
+        queryParameters: queryParams,
+      );
+
+      final items = response.data['items'] as List<dynamic>;
+      final nextToken = response.data['nextPageToken'] as String?;
+      final totalResults =
+          response.data['pageInfo']?['totalResults'] as int? ?? 0;
+
+      LoggerHelper.info(
+          'Fetched ${items.length} playlists (total: $totalResults, hasMore: ${nextToken != null})');
+
+      return PlaylistsApiResponse(
+        items: items,
+        nextPageToken: nextToken,
+        totalResults: totalResults,
+      );
+    } on DioException catch (e) {
+      LoggerHelper.error('DioException fetching playlists', e);
+      throw _handleDioException(e);
+    }
+  }
+
+  /// Fetches videos from a specific playlist with pagination support.
+  /// [playlistId] - The ID of the playlist to fetch videos from.
+  /// [pageToken] - Optional token for fetching next page of results.
+  Future<YouTubeApiResponse> fetchPlaylistItems({
+    required String playlistId,
+    String? pageToken,
+  }) async {
+    try {
+      return await RetryHelper.withExponentialBackoff(
+        maxAttempts: _maxRetryAttempts,
+        retryIf: _shouldRetry,
+        fn: () => _fetchPlaylistItemsInternal(
+          playlistId: playlistId,
+          pageToken: pageToken,
+        ),
+      );
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      LoggerHelper.error('Unexpected error fetching playlist items', e);
+      throw const UnexpectedFailure('Failed to load playlist videos');
+    }
+  }
+
+  /// Internal method that fetches playlist items from YouTube API.
+  Future<YouTubeApiResponse> _fetchPlaylistItemsInternal({
+    required String playlistId,
+    String? pageToken,
+  }) async {
+    LoggerHelper.debug(
+        'Calling YouTube API to fetch playlist items for $playlistId${pageToken != null ? " (page: $pageToken)" : ""}');
+
+    final queryParams = <String, dynamic>{
+      'part': 'snippet,contentDetails',
+      'playlistId': playlistId,
+      'maxResults': _pageSize,
+      'key': ApiConstants.apiKey,
+    };
+
+    if (pageToken != null) {
+      queryParams['pageToken'] = pageToken;
+    }
+
+    try {
+      final response = await dioClient.get(
+        '${ApiConstants.baseUrl}playlistItems',
+        queryParameters: queryParams,
+      );
+
+      final items = response.data['items'] as List<dynamic>;
+      final nextToken = response.data['nextPageToken'] as String?;
+      final totalResults =
+          response.data['pageInfo']?['totalResults'] as int? ?? 0;
+
+      LoggerHelper.info(
+          'Fetched ${items.length} playlist items (total: $totalResults, hasMore: ${nextToken != null})');
+
+      return YouTubeApiResponse(
+        items: items,
+        nextPageToken: nextToken,
+        totalResults: totalResults,
+      );
+    } on DioException catch (e) {
+      LoggerHelper.error('DioException fetching playlist items', e);
+      throw _handleDioException(e);
     }
   }
 }

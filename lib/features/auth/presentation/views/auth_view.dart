@@ -2,7 +2,7 @@ import 'package:eng_alaa_hammed/core/constants/strings.dart';
 import 'package:eng_alaa_hammed/core/dependency_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_state.dart';
-import 'package:eng_alaa_hammed/features/videos/presentation/views/all_videos_page.dart';
+import 'package:eng_alaa_hammed/features/home/presentation/views/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,10 +40,10 @@ class _AuthViewState extends State<AuthView> {
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
               if (state is AuthSuccess) {
-                // Navigate to videos page on successful auth
+                // Navigate to home page on successful auth
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (_) => const AllVideosPage(),
+                    builder: (_) => const HomePage(),
                   ),
                 );
               }

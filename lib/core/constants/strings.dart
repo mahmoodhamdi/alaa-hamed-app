@@ -101,4 +101,19 @@ class AppStrings {
   static const String contactEn = 'Contact Us';
   static const String qualityAuto = 'تلقائي';
   static const String qualityAutoEn = 'Auto';
+
+  // Playlists Page
+  static const String playlists = 'قوائم التشغيل';
+  static const String playlistsEn = 'Playlists';
+  static const String failedToLoadPlaylists = 'Failed to load playlists';
+  static const String noPlaylistsAvailable = 'لا توجد قوائم تشغيل';
+  static const String noPlaylistsAvailableEn = 'No Playlists Available';
+  static const String videoCount = 'فيديو';
+  static const String videoCountEn = 'video';
+  static const String videosPlural = 'فيديوهات';
+  static const String videosPluralEn = 'videos';
+
+  // Home Page Tabs
+  static const String home = 'الرئيسية';
+  static const String homeEn = 'Home';
 }

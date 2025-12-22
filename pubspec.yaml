@@ -28,6 +28,7 @@ dependencies:
   shimmer:
   flutter_cache_manager:
   package_info_plus:
+  share_plus:
 
 dev_dependencies:
   flutter_test:
