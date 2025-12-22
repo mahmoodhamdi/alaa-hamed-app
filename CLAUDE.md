@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Flutter application for "Eng Alaa Hammed" - a YouTube channel viewer app with Google OAuth authentication. The app fetches and displays videos from a specific YouTube channel.
+Flutter application for "Eng Alaa Hammed" - a YouTube channel viewer app with Google OAuth authentication. The app fetches and displays videos from a specific YouTube channel, with playlists, favorites, and watch history features.
 
 ## Common Commands
 
@@ -29,6 +29,9 @@ flutter pub get
 
 # Clean and rebuild
 flutter clean && flutter pub get
+
+# Run integration tests
+flutter test integration_test/app_test.dart -d <device_id>
 ```
 
 ## Architecture
@@ -37,29 +40,26 @@ The project follows **Clean Architecture** with a feature-based structure:
 
 ```
 lib/
-├── core/                    # Shared utilities and configurations
+├── core/
 │   ├── config/              # App configuration (locale, RTL support)
-│   ├── constants/           # API keys, colors, strings, styles
+│   ├── constants/           # API keys, colors, strings, styles, dimensions
 │   ├── dependency_injection/ # GetIt service locator setup
 │   ├── error/               # Failure classes for error handling
-│   ├── helpers/             # Logger, exception handlers
-│   ├── network/             # Dio HTTP client setup
+│   ├── helpers/             # Logger, exception handlers, retry helper
+│   ├── network/             # Dio HTTP client setup with interceptors
+│   ├── services/            # App-wide services (see Core Services below)
 │   ├── theme/               # Light/dark theme definitions
-│   └── usecase/             # Base UseCase abstract class
+│   ├── usecase/             # Base UseCase abstract class
+│   └── widgets/             # Shared widgets (EnhancedVideoCard, EmptyState, ErrorState)
 ├── features/
 │   ├── auth/                # Google OAuth authentication
-│   │   ├── data/repository/ # GoogleAuthRepositoryImpl
-│   │   ├── domain/          # AuthRepository interface, OAuthUseCase
-│   │   └── presentation/    # AuthCubit, AuthState, AuthView
+│   ├── favorites/           # Video favorites (Hive-based local storage)
+│   ├── home/                # Bottom navigation home page
+│   ├── playlists/           # YouTube playlist listing and videos
 │   ├── settings/            # App settings & preferences
-│   │   ├── data/repository/ # SettingsRepositoryImpl (SharedPreferences)
-│   │   ├── domain/          # AppSettings entity, SettingsRepository
-│   │   └── presentation/    # SettingsCubit, SettingsState, SettingsPage
+│   ├── splash/              # Splash screen with auth check
 │   ├── videos/              # YouTube video listing and playback
-│   │   ├── data/            # YouTubeService, VideoModel, VideoRepositoryImpl
-│   │   ├── domain/          # Video entity, VideoRepository, GetVideosUseCase
-│   │   └── presentation/    # VideoCubit, AllVideosState, pages
-│   └── splash/              # Splash screen
+│   └── watch_history/       # Video watch history tracking
 └── app.dart                 # MaterialApp configuration
 ```
 
@@ -84,6 +84,19 @@ lib/
 - YouTube Data API v3 integration
 - API constants in `lib/core/constants/api_constants.dart`
 
+### Core Services
+Located in `lib/core/services/`:
+- **VideoCacheService**: Hive-based video caching for offline access
+- **FavoritesService**: Hive-based favorites storage
+- **WatchHistoryService**: Hive-based watch history tracking
+- **SecureStorageService**: flutter_secure_storage wrapper for sensitive data
+- **ConnectivityService**: Network connectivity monitoring via connectivity_plus
+
+### Local Storage
+- **Hive** for local data (favorites, watch history, video cache)
+- **SharedPreferences** for settings
+- **flutter_secure_storage** for tokens and sensitive data
+
 ## Localization
 
 - Supports Arabic (default) and English
@@ -103,53 +116,12 @@ flutter test --reporter expanded
 flutter test test/features/videos/data/models/video_model_test.dart
 
 # Run integration tests
-flutter test integration_test/app_test.dart
 flutter test integration_test/app_test.dart -d <device_id>
 ```
 
-Test structure mirrors lib folder:
-```
-test/
-├── core/
-│   ├── constants/strings_test.dart
-│   ├── error/failures_test.dart
-│   ├── helpers/
-│   │   ├── logger_helper_test.dart
-│   │   └── retry_helper_test.dart
-│   ├── network/dio_client_test.dart
-│   └── usecase/usecase_test.dart
-├── features/
-│   ├── auth/
-│   │   ├── data/repository/google_auth_repository_impl_test.dart
-│   │   ├── domain/usecases/oauth_use_case_test.dart
-│   │   └── presentation/views/auth_view_test.dart
-│   ├── settings/
-│   │   ├── data/repository/settings_repository_impl_test.dart
-│   │   ├── domain/entities/app_settings_test.dart
-│   │   └── presentation/logic/
-│   │       ├── settings_cubit_test.dart
-│   │       └── settings_state_test.dart
-│   ├── splash/
-│   │   └── views/splash_view_test.dart
-│   └── videos/
-│       ├── data/models/video_model_test.dart
-│       ├── data/repository/video_repository_impl_test.dart
-│       ├── domain/entities/video_test.dart
-│       ├── domain/usecases/get_videos_use_case_test.dart
-│       └── presentation/views/
-│           ├── all_videos_page_test.dart
-│           └── video_player_page_test.dart
-└── widget_test.dart
-
-integration_test/
-├── app_test.dart              # Full app flow tests
-├── auth_flow_test.dart        # Authentication flow tests
-├── video_flow_test.dart       # Video listing tests
-├── video_player_navigation_test.dart
-└── test_helpers.dart          # Shared test utilities
-```
-
-Testing uses `mocktail` for mocking and `bloc_test` for Cubit testing.
+- Test structure mirrors `lib/` folder (e.g., `lib/features/auth/` → `test/features/auth/`)
+- Integration tests in `integration_test/` with shared helpers in `test_helpers.dart`
+- Uses `mocktail` for mocking and `bloc_test` for Cubit testing
 
 ## Feature Implementation Flow
 
@@ -199,3 +171,5 @@ These are accessed via `lib/core/constants/api_constants.dart`.
 | HTTP Client | `lib/core/network/dio_client.dart` |
 | Theme Definitions | `lib/core/theme/app_theme.dart` |
 | Localized Strings | `lib/core/constants/strings.dart` |
+| YouTube Data Fetching | `lib/features/videos/data/data_sources/youtube_service.dart` |
+| Video Caching | `lib/core/services/video_cache_service.dart` |
