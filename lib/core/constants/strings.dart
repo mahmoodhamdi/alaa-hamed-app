@@ -19,6 +19,10 @@ class AppStrings {
   static const String retry = 'Retry';
   static const String noVideosAvailable = 'No Videos Available';
   static const String checkBackLater = 'Check back later for new content';
+  static const String videosCount = 'فيديو';
+  static const String videosCountEn = 'videos';
+  static const String loadingMore = 'Loading more...';
+  static const String pullToRefresh = 'Pull to refresh';
 
   // Video Player Page
   static const String publishedOn = 'Published on';

@@ -25,6 +25,7 @@ dependencies:
   cached_network_image:
   google_sign_in:
   flutter_dotenv:
+  shimmer:
 
 dev_dependencies:
   flutter_test:

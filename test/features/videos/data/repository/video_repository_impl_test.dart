@@ -45,8 +45,12 @@ void main() {
     group('getVideos', () {
       test('should return list of videos when service call succeeds', () async {
         // Arrange
-        when(() => mockYouTubeService.fetchVideos())
-            .thenAnswer((_) async => testVideoJson);
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
+            .thenAnswer((_) async => YouTubeApiResponse(
+                  items: testVideoJson,
+                  nextPageToken: 'next_page_token',
+                  totalResults: 100,
+                ));
 
         // Act
         final result = await repository.getVideos();
@@ -55,22 +59,28 @@ void main() {
         expect(result.isRight(), true);
         result.fold(
           (failure) => fail('Should not return failure'),
-          (videos) {
-            expect(videos.length, 2);
-            expect(videos[0].id, 'video1');
-            expect(videos[0].title, 'Test Video 1');
-            expect(videos[0].videoUrl, 'https://www.youtube.com/watch?v=video1');
-            expect(videos[1].id, 'video2');
-            expect(videos[1].title, 'Test Video 2');
+          (response) {
+            expect(response.videos.length, 2);
+            expect(response.videos[0].id, 'video1');
+            expect(response.videos[0].title, 'Test Video 1');
+            expect(response.videos[0].videoUrl, 'https://www.youtube.com/watch?v=video1');
+            expect(response.videos[1].id, 'video2');
+            expect(response.videos[1].title, 'Test Video 2');
+            expect(response.nextPageToken, 'next_page_token');
+            expect(response.totalResults, 100);
           },
         );
-        verify(() => mockYouTubeService.fetchVideos()).called(1);
+        verify(() => mockYouTubeService.fetchVideos(pageToken: null)).called(1);
       });
 
       test('should return empty list when service returns empty', () async {
         // Arrange
-        when(() => mockYouTubeService.fetchVideos())
-            .thenAnswer((_) async => []);
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
+            .thenAnswer((_) async => YouTubeApiResponse(
+                  items: [],
+                  nextPageToken: null,
+                  totalResults: 0,
+                ));
 
         // Act
         final result = await repository.getVideos();
@@ -79,14 +89,32 @@ void main() {
         expect(result.isRight(), true);
         result.fold(
           (failure) => fail('Should not return failure'),
-          (videos) => expect(videos, isEmpty),
+          (response) => expect(response.videos, isEmpty),
         );
+      });
+
+      test('should pass pageToken to service', () async {
+        // Arrange
+        when(() => mockYouTubeService.fetchVideos(pageToken: 'test_token'))
+            .thenAnswer((_) async => YouTubeApiResponse(
+                  items: testVideoJson,
+                  nextPageToken: null,
+                  totalResults: 2,
+                ));
+
+        // Act
+        await repository.getVideos(pageToken: 'test_token');
+
+        // Assert
+        verify(() => mockYouTubeService.fetchVideos(pageToken: 'test_token'))
+            .called(1);
       });
 
       test('should return ServerFailure when service throws ServerFailure', () async {
         // Arrange
         const failure = ServerFailure('Server error');
-        when(() => mockYouTubeService.fetchVideos()).thenThrow(failure);
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
+            .thenThrow(failure);
 
         // Act
         final result = await repository.getVideos();
@@ -95,14 +123,15 @@ void main() {
         expect(result.isLeft(), true);
         result.fold(
           (f) => expect(f, failure),
-          (videos) => fail('Should not return videos'),
+          (response) => fail('Should not return response'),
         );
       });
 
       test('should return NetworkFailure when service throws NetworkFailure', () async {
         // Arrange
         const failure = NetworkFailure('No internet connection');
-        when(() => mockYouTubeService.fetchVideos()).thenThrow(failure);
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
+            .thenThrow(failure);
 
         // Act
         final result = await repository.getVideos();
@@ -111,14 +140,15 @@ void main() {
         expect(result.isLeft(), true);
         result.fold(
           (f) => expect(f, failure),
-          (videos) => fail('Should not return videos'),
+          (response) => fail('Should not return response'),
         );
       });
 
       test('should return AuthenticationFailure when service throws AuthenticationFailure', () async {
         // Arrange
         const failure = AuthenticationFailure('Unauthorized');
-        when(() => mockYouTubeService.fetchVideos()).thenThrow(failure);
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
+            .thenThrow(failure);
 
         // Act
         final result = await repository.getVideos();
@@ -127,13 +157,13 @@ void main() {
         expect(result.isLeft(), true);
         result.fold(
           (f) => expect(f, failure),
-          (videos) => fail('Should not return videos'),
+          (response) => fail('Should not return response'),
         );
       });
 
       test('should return UnexpectedFailure when service throws unexpected error', () async {
         // Arrange
-        when(() => mockYouTubeService.fetchVideos())
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
             .thenThrow(Exception('Unexpected error'));
 
         // Act
@@ -146,14 +176,18 @@ void main() {
             expect(f, isA<UnexpectedFailure>());
             expect(f.message, 'Failed to load videos');
           },
-          (videos) => fail('Should not return videos'),
+          (response) => fail('Should not return response'),
         );
       });
 
       test('should correctly parse video data from JSON', () async {
         // Arrange
-        when(() => mockYouTubeService.fetchVideos())
-            .thenAnswer((_) async => testVideoJson);
+        when(() => mockYouTubeService.fetchVideos(pageToken: any(named: 'pageToken')))
+            .thenAnswer((_) async => YouTubeApiResponse(
+                  items: testVideoJson,
+                  nextPageToken: null,
+                  totalResults: 2,
+                ));
 
         // Act
         final result = await repository.getVideos();
@@ -161,8 +195,8 @@ void main() {
         // Assert
         result.fold(
           (failure) => fail('Should not return failure'),
-          (videos) {
-            final video = videos[0];
+          (response) {
+            final video = response.videos[0];
             expect(video, isA<Video>());
             expect(video.id, 'video1');
             expect(video.title, 'Test Video 1');

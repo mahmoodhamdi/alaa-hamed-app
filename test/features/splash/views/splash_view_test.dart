@@ -8,7 +8,7 @@ import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart
 import 'package:eng_alaa_hammed/features/auth/presentation/views/auth_view.dart';
 import 'package:eng_alaa_hammed/features/splash/views/splash_view.dart';
 import 'package:eng_alaa_hammed/features/videos/data/data_sources/youtube_service.dart';
-import 'package:eng_alaa_hammed/features/videos/domain/entities/video.dart';
+import 'package:eng_alaa_hammed/features/videos/data/models/paginated_videos_response.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/repository/video_repository.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/usecases/get_videos_use_case.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_cubit.dart';
@@ -55,8 +55,13 @@ Future<void> setupMockedServiceLocator() async {
 
   // Mock Video Repository
   final mockVideoRepository = MockVideoRepository();
-  when(() => mockVideoRepository.getVideos()).thenAnswer(
-    (_) async => const Right(<Video>[]),
+  when(() => mockVideoRepository.getVideos(pageToken: any(named: 'pageToken')))
+      .thenAnswer(
+    (_) async => const Right(PaginatedVideosResponse(
+      videos: [],
+      nextPageToken: null,
+      totalResults: 0,
+    )),
   );
 
   // Register mocked dependencies

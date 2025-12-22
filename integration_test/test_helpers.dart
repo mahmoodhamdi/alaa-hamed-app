@@ -6,6 +6,7 @@ import 'package:eng_alaa_hammed/features/auth/domain/repository/auth_repository.
 import 'package:eng_alaa_hammed/features/auth/domain/usecases/oauth_use_case.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
 import 'package:eng_alaa_hammed/features/videos/data/data_sources/youtube_service.dart';
+import 'package:eng_alaa_hammed/features/videos/data/models/paginated_videos_response.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/entities/video.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/repository/video_repository.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/usecases/get_videos_use_case.dart';
@@ -95,13 +96,20 @@ Future<void> setupMockedServiceLocator({
 
   // Mock Video Repository
   final mockVideoRepository = MockVideoRepository();
+  final videoList = videos ?? testVideos;
   if (videosSuccess) {
-    when(() => mockVideoRepository.getVideos()).thenAnswer((_) async {
+    when(() => mockVideoRepository.getVideos(pageToken: any(named: 'pageToken')))
+        .thenAnswer((_) async {
       await Future.delayed(mockDelay);
-      return Right(videos ?? testVideos);
+      return Right(PaginatedVideosResponse(
+        videos: videoList,
+        nextPageToken: null,
+        totalResults: videoList.length,
+      ));
     });
   } else {
-    when(() => mockVideoRepository.getVideos()).thenAnswer((_) async {
+    when(() => mockVideoRepository.getVideos(pageToken: any(named: 'pageToken')))
+        .thenAnswer((_) async {
       await Future.delayed(mockDelay);
       return const Left(ServerFailure('Failed to load videos'));
     });

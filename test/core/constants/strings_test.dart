@@ -47,6 +47,22 @@ void main() {
       test('should have check back later message', () {
         expect(AppStrings.checkBackLater, 'Check back later for new content');
       });
+
+      test('should have Arabic videos count label', () {
+        expect(AppStrings.videosCount, 'فيديو');
+      });
+
+      test('should have English videos count label', () {
+        expect(AppStrings.videosCountEn, 'videos');
+      });
+
+      test('should have loading more message', () {
+        expect(AppStrings.loadingMore, 'Loading more...');
+      });
+
+      test('should have pull to refresh message', () {
+        expect(AppStrings.pullToRefresh, 'Pull to refresh');
+      });
     });
 
     group('Video Player Page', () {
