@@ -2,6 +2,7 @@ import 'package:eng_alaa_hammed/core/constants/strings.dart';
 import 'package:eng_alaa_hammed/core/dependency_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_state.dart';
+import 'package:eng_alaa_hammed/features/videos/presentation/views/all_videos_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +37,17 @@ class _AuthViewState extends State<AuthView> {
       child: Scaffold(
         appBar: AppBar(title: const Text(AppStrings.googleSignIn)),
         body: Center(
-          child: BlocBuilder<AuthCubit, AuthState>(
+          child: BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthSuccess) {
+                // Navigate to videos page on successful auth
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => const AllVideosPage(),
+                  ),
+                );
+              }
+            },
             builder: (context, state) {
               if (state is AuthLoading) {
                 return const CircularProgressIndicator();
@@ -61,22 +72,8 @@ class _AuthViewState extends State<AuthView> {
                   ],
                 );
               } else if (state is AuthSuccess) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.check_circle, color: Colors.green, size: 48),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppStrings.signedIn,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${AppStrings.accessToken}: ${state.accessToken.substring(0, 20)}...',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                );
+                // Show loading while navigating
+                return const CircularProgressIndicator();
               }
               return ElevatedButton.icon(
                 onPressed: () {
