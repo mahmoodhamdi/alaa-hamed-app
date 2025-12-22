@@ -32,8 +32,11 @@ void main() {
     });
 
     testWidgets('should show loading indicator when sign in is tapped', (tester) async {
-      // Arrange
-      await setupMockedServiceLocator(authSuccess: true);
+      // Arrange - use longer delay to ensure loading state is visible
+      await setupMockedServiceLocator(
+        authSuccess: true,
+        mockDelay: const Duration(milliseconds: 500),
+      );
 
       await tester.pumpWidget(
         const MaterialApp(
@@ -44,7 +47,7 @@ void main() {
 
       // Act
       await tester.tap(find.text(AppStrings.signInWithGoogle));
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
       // Assert - should show loading
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -92,8 +95,11 @@ void main() {
     });
 
     testWidgets('should allow retry after failed sign in', (tester) async {
-      // Arrange
-      await setupMockedServiceLocator(authSuccess: false);
+      // Arrange - use longer delay to ensure loading state is visible
+      await setupMockedServiceLocator(
+        authSuccess: false,
+        mockDelay: const Duration(milliseconds: 500),
+      );
 
       await tester.pumpWidget(
         const MaterialApp(
@@ -111,7 +117,7 @@ void main() {
 
       // Act - tap retry
       await tester.tap(find.text(AppStrings.retry));
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
       // Assert - should show loading again
       expect(find.byType(CircularProgressIndicator), findsOneWidget);

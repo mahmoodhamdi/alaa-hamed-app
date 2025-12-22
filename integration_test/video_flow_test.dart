@@ -15,8 +15,11 @@ void main() {
     });
 
     testWidgets('should display loading indicator initially', (tester) async {
-      // Arrange
-      await setupMockedServiceLocator(videosSuccess: true);
+      // Arrange - use longer delay to ensure loading state is visible
+      await setupMockedServiceLocator(
+        videosSuccess: true,
+        mockDelay: const Duration(milliseconds: 500),
+      );
 
       // Act
       await tester.pumpWidget(
@@ -24,7 +27,7 @@ void main() {
           home: AllVideosPage(),
         ),
       );
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
       // Assert
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -140,8 +143,11 @@ void main() {
     });
 
     testWidgets('retry button should trigger new fetch', (tester) async {
-      // Arrange
-      await setupMockedServiceLocator(videosSuccess: false);
+      // Arrange - use longer delay to ensure loading state is visible
+      await setupMockedServiceLocator(
+        videosSuccess: false,
+        mockDelay: const Duration(milliseconds: 500),
+      );
 
       await tester.pumpWidget(
         const MaterialApp(
@@ -155,7 +161,7 @@ void main() {
 
       // Act - tap retry
       await tester.tap(find.text(AppStrings.retry));
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
       // Assert - should show loading
       expect(find.byType(CircularProgressIndicator), findsOneWidget);

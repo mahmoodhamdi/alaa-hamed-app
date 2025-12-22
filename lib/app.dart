@@ -1,11 +1,7 @@
 import 'package:eng_alaa_hammed/core/config/config.dart';
 import 'package:eng_alaa_hammed/core/theme/app_theme.dart';
-import 'package:eng_alaa_hammed/features/auth/presentation/views/auth_view.dart';
+import 'package:eng_alaa_hammed/features/splash/views/splash_view.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -17,12 +13,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
-      themeMode: ThemeMode.system, // تغيير تلقائي بين الفاتح والداكن
+      themeMode: ThemeMode.system,
       locale: Config.locale,
       localizationsDelegates: Config.localizationsDelegates,
       supportedLocales: Config.supportedLocales,
       builder: Config.builder,
-      home: AuthView(),
+      home: const SplashView(),
     );
   }
 }

@@ -65,6 +65,7 @@ Future<void> setupMockedServiceLocator({
   bool authSuccess = true,
   bool videosSuccess = true,
   List<Video>? videos,
+  Duration mockDelay = const Duration(milliseconds: 100),
 }) async {
   final getIt = GetIt.instance;
 
@@ -77,24 +78,33 @@ Future<void> setupMockedServiceLocator({
   final mockGoogleSignInAuthentication = MockGoogleSignInAuthentication();
 
   if (authSuccess) {
-    when(() => mockGoogleSignIn.signIn())
-        .thenAnswer((_) async => mockGoogleSignInAccount);
+    when(() => mockGoogleSignIn.signIn()).thenAnswer((_) async {
+      await Future.delayed(mockDelay);
+      return mockGoogleSignInAccount;
+    });
     when(() => mockGoogleSignInAccount.authentication)
         .thenAnswer((_) async => mockGoogleSignInAuthentication);
     when(() => mockGoogleSignInAuthentication.accessToken)
         .thenReturn(testAccessToken);
   } else {
-    when(() => mockGoogleSignIn.signIn()).thenAnswer((_) async => null);
+    when(() => mockGoogleSignIn.signIn()).thenAnswer((_) async {
+      await Future.delayed(mockDelay);
+      return null;
+    });
   }
 
   // Mock Video Repository
   final mockVideoRepository = MockVideoRepository();
   if (videosSuccess) {
-    when(() => mockVideoRepository.getVideos())
-        .thenAnswer((_) async => Right(videos ?? testVideos));
+    when(() => mockVideoRepository.getVideos()).thenAnswer((_) async {
+      await Future.delayed(mockDelay);
+      return Right(videos ?? testVideos);
+    });
   } else {
-    when(() => mockVideoRepository.getVideos())
-        .thenAnswer((_) async => const Left(ServerFailure('Failed to load videos')));
+    when(() => mockVideoRepository.getVideos()).thenAnswer((_) async {
+      await Future.delayed(mockDelay);
+      return const Left(ServerFailure('Failed to load videos'));
+    });
   }
 
   // Register mocked dependencies

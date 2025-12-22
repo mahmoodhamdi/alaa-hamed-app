@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eng_alaa_hammed/core/constants/strings.dart';
-import 'package:eng_alaa_hammed/core/depandancy_injection/service_locator.dart';
+import 'package:eng_alaa_hammed/core/dependency_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/core/enums/status.dart';
 import 'package:eng_alaa_hammed/core/formatters/formatter.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_cubit.dart';

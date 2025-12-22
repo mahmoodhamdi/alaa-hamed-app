@@ -40,7 +40,7 @@ lib/
 ├── core/                    # Shared utilities and configurations
 │   ├── config/              # App configuration (locale, RTL support)
 │   ├── constants/           # API keys, colors, strings, styles
-│   ├── depandancy_injection/ # GetIt service locator setup
+│   ├── dependency_injection/ # GetIt service locator setup
 │   ├── error/               # Failure classes for error handling
 │   ├── helpers/             # Logger, exception handlers
 │   ├── network/             # Dio HTTP client setup
@@ -67,7 +67,7 @@ lib/
 - State classes use `copyWith` for immutable updates
 
 ### Dependency Injection
-- **GetIt** service locator configured in `lib/core/depandancy_injection/service_locator.dart`
+- **GetIt** service locator configured in `lib/core/dependency_injection/service_locator.dart`
 - Register dependencies in `setupServiceLocator()` before app runs
 - Access via `getIt<Type>()`
 
@@ -97,19 +97,47 @@ flutter test --reporter expanded
 
 # Run specific test file
 flutter test test/features/videos/data/models/video_model_test.dart
+
+# Run integration tests
+flutter test integration_test/app_test.dart
+flutter test integration_test/app_test.dart -d <device_id>
 ```
 
 Test structure mirrors lib folder:
 ```
 test/
 ├── core/
+│   ├── constants/strings_test.dart
+│   ├── error/failures_test.dart
+│   ├── helpers/logger_helper_test.dart
+│   ├── network/dio_client_test.dart
 │   └── usecase/usecase_test.dart
 ├── features/
+│   ├── auth/
+│   │   ├── data/repository/google_auth_repository_impl_test.dart
+│   │   ├── domain/usecases/oauth_use_case_test.dart
+│   │   └── presentation/views/auth_view_test.dart
+│   ├── splash/
+│   │   └── views/splash_view_test.dart
 │   └── videos/
 │       ├── data/models/video_model_test.dart
-│       └── domain/entities/video_test.dart
+│       ├── data/repository/video_repository_impl_test.dart
+│       ├── domain/entities/video_test.dart
+│       ├── domain/usecases/get_videos_use_case_test.dart
+│       └── presentation/views/
+│           ├── all_videos_page_test.dart
+│           └── video_player_page_test.dart
 └── widget_test.dart
+
+integration_test/
+├── app_test.dart              # Full app flow tests
+├── auth_flow_test.dart        # Authentication flow tests
+├── video_flow_test.dart       # Video listing tests
+├── video_player_navigation_test.dart
+└── test_helpers.dart          # Shared test utilities
 ```
+
+Testing uses `mocktail` for mocking and `bloc_test` for Cubit testing.
 
 ## Feature Implementation Flow
 
@@ -123,6 +151,17 @@ test/
 8. Register all dependencies in `service_locator.dart`
 9. Write unit tests for each layer
 
+## Environment Setup
+
+The app uses `flutter_dotenv` for environment variables. Create a `.env` file in the project root:
+
+```
+YOUTUBE_API_KEY=your_api_key_here
+YOUTUBE_CHANNEL_ID=your_channel_id_here
+```
+
+These are accessed via `lib/core/constants/api_constants.dart`.
+
 ## Configuration
 
 | Configuration | Value |
@@ -135,3 +174,16 @@ test/
 | iOS Deployment | 13.0 |
 | Android minSdk | flutter.minSdkVersion |
 | Android targetSdk | flutter.targetSdkVersion |
+
+## Key Files
+
+| Purpose | Path |
+|---------|------|
+| App Entry Point | `lib/main.dart` |
+| MaterialApp Config | `lib/app.dart` |
+| Dependency Injection | `lib/core/dependency_injection/service_locator.dart` |
+| API Constants | `lib/core/constants/api_constants.dart` |
+| Failure Types | `lib/core/error/failures.dart` |
+| HTTP Client | `lib/core/network/dio_client.dart` |
+| Theme Definitions | `lib/core/theme/app_theme.dart` |
+| Localized Strings | `lib/core/constants/strings.dart` |

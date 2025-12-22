@@ -13,6 +13,16 @@ void main() {
       });
     });
 
+    group('Splash Screen', () {
+      test('should have Arabic splash subtitle', () {
+        expect(AppStrings.splashSubtitle, 'محتوى تعليمي مميز');
+      });
+
+      test('should have English splash subtitle', () {
+        expect(AppStrings.splashSubtitleEn, 'Premium Educational Content');
+      });
+    });
+
     group('Videos Page', () {
       test('should have Arabic all videos title', () {
         expect(AppStrings.allVideos, 'كل الفيديوهات');

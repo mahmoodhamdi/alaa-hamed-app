@@ -1,5 +1,5 @@
 import 'package:eng_alaa_hammed/core/constants/strings.dart';
-import 'package:eng_alaa_hammed/core/depandancy_injection/service_locator.dart';
+import 'package:eng_alaa_hammed/core/dependency_injection/service_locator.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_state.dart';
 import 'package:flutter/material.dart';

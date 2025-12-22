@@ -8,6 +8,10 @@ class AppStrings {
   static const String appName = 'قناة علاء حامد';
   static const String appNameEn = 'Alaa Hamed Channel';
 
+  // Splash Screen
+  static const String splashSubtitle = 'محتوى تعليمي مميز';
+  static const String splashSubtitleEn = 'Premium Educational Content';
+
   // Videos Page
   static const String allVideos = 'كل الفيديوهات';
   static const String allVideosEn = 'All Videos';
