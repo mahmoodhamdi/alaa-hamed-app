@@ -79,15 +79,35 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title) {
+  Widget _buildSectionHeader(
+      BuildContext context, String title, IconData icon) {
+    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(8),
             ),
+            child: Icon(
+              icon,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -96,7 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, AppStrings.appearance),
+        _buildSectionHeader(context, AppStrings.appearance, Icons.palette_outlined),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Column(
@@ -135,7 +155,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, AppStrings.notifications),
+        _buildSectionHeader(
+            context, AppStrings.notifications, Icons.notifications_outlined),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: SwitchListTile(
@@ -159,7 +180,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, AppStrings.videoSettings),
+        _buildSectionHeader(
+            context, AppStrings.videoSettings, Icons.video_settings_outlined),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Column(
@@ -199,7 +221,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, AppStrings.storage),
+        _buildSectionHeader(context, AppStrings.storage, Icons.storage_outlined),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: ListTile(
@@ -227,7 +249,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, AppStrings.account),
+        _buildSectionHeader(
+            context, AppStrings.account, Icons.account_circle_outlined),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: ListTile(
@@ -250,7 +273,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(context, AppStrings.about),
+        _buildSectionHeader(context, AppStrings.about, Icons.info_outline),
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Column(
@@ -278,7 +301,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 title: const Text(AppStrings.developer),
-                trailing: Text(
+                subtitle: Text(
                   AppStrings.developerName,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context)
@@ -287,6 +310,22 @@ class _SettingsPageState extends State<SettingsPage> {
                             .withValues(alpha: 0.6),
                       ),
                 ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.code,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text('GitHub'),
+                subtitle: Text(
+                  AppStrings.developerGithub,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+                trailing: const Icon(Icons.open_in_new),
+                onTap: () => _showGithubLink(context),
               ),
               const Divider(height: 1, indent: 56),
               ListTile(
@@ -463,6 +502,35 @@ class _SettingsPageState extends State<SettingsPage> {
             SelectableText('Email: hmdy7486@gmail.com'),
             SizedBox(height: 8),
             SelectableText('Phone: +201019793768'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(AppStrings.cancel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGithubLink(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('GitHub'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppStrings.developerName,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            const SelectableText(AppStrings.developerGithub),
           ],
         ),
         actions: [

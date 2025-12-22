@@ -1,5 +1,6 @@
 import 'package:eng_alaa_hammed/core/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppThemes {
   // Private constructor
@@ -10,31 +11,40 @@ class AppThemes {
     brightness: Brightness.light,
     primaryColor: AppColors.lightPrimary,
     scaffoldBackgroundColor: AppColors.lightBackground,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.lightPrimary,
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
-      titleTextStyle: TextStyle(
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      titleTextStyle: const TextStyle(
         fontFamily: 'Cairo',
         fontSize: 18,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
+      iconTheme: const IconThemeData(color: Colors.white),
     ),
     textTheme: _textTheme(AppColors.lightText),
     colorScheme: const ColorScheme.light(
       primary: AppColors.lightPrimary,
+      primaryContainer: AppColors.lightPrimaryLight,
       secondary: AppColors.lightSecondary,
+      tertiary: AppColors.lightTertiary,
       surface: AppColors.lightSurface,
+      surfaceContainerHighest: AppColors.lightSurfaceVariant,
       onSurface: AppColors.lightText,
+      onSurfaceVariant: AppColors.lightTextSecondary,
       error: AppColors.error,
+      errorContainer: AppColors.errorLight,
     ),
     iconTheme: const IconThemeData(color: AppColors.lightPrimary),
     fontFamily: 'Cairo',
     cardTheme: CardThemeData(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      shadowColor: AppColors.shadowLight,
+      color: AppColors.lightCardBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       clipBehavior: Clip.antiAlias,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -42,11 +52,25 @@ class AppThemes {
         backgroundColor: AppColors.lightPrimary,
         foregroundColor: Colors.white,
         elevation: 2,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shadowColor: AppColors.shadowLight,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: const TextStyle(
           fontFamily: 'Cairo',
-          fontSize: 14,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.lightPrimary,
+        side: const BorderSide(color: AppColors.lightPrimary, width: 1.5),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: const TextStyle(
+          fontFamily: 'Cairo',
+          fontSize: 15,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -65,6 +89,7 @@ class AppThemes {
       labelColor: Colors.white,
       unselectedLabelColor: Colors.white70,
       indicatorColor: Colors.white,
+      indicatorSize: TabBarIndicatorSize.label,
       labelStyle: TextStyle(
         fontFamily: 'Cairo',
         fontSize: 14,
@@ -76,66 +101,144 @@ class AppThemes {
         fontWeight: FontWeight.w400,
       ),
     ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppColors.lightSurface,
+      selectedItemColor: AppColors.lightPrimary,
+      unselectedItemColor: AppColors.lightTextTertiary,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+      selectedLabelStyle: TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+      ),
+      unselectedLabelStyle: TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColors.lightSurfaceVariant,
+      selectedColor: AppColors.lightPrimary,
+      labelStyle: const TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
     dividerTheme: const DividerThemeData(
       color: AppColors.lightDivider,
       thickness: 1,
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      backgroundColor: AppColors.lightText,
+      contentTextStyle: const TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 14,
+        color: Colors.white,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.lightSurfaceVariant,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.lightPrimary, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      hintStyle: const TextStyle(
+        fontFamily: 'Cairo',
+        color: AppColors.lightTextTertiary,
+      ),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppColors.lightSecondary,
+      foregroundColor: AppColors.lightText,
+      elevation: 4,
     ),
   );
 
   // Dark Theme
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: AppColors.darkPrimaryLight,
+    primaryColor: AppColors.darkPrimary,
     scaffoldBackgroundColor: AppColors.darkBackground,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.darkSurface,
       foregroundColor: AppColors.darkText,
       elevation: 0,
       centerTitle: true,
-      titleTextStyle: TextStyle(
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      titleTextStyle: const TextStyle(
         fontFamily: 'Cairo',
         fontSize: 18,
         fontWeight: FontWeight.bold,
         color: AppColors.darkText,
       ),
+      iconTheme: const IconThemeData(color: AppColors.darkText),
     ),
     textTheme: _textTheme(AppColors.darkText),
     colorScheme: const ColorScheme.dark(
-      primary: AppColors.darkPrimaryLight,
+      primary: AppColors.darkPrimary,
+      primaryContainer: AppColors.darkPrimaryDark,
       secondary: AppColors.darkSecondary,
+      tertiary: AppColors.darkTertiary,
       surface: AppColors.darkSurface,
+      surfaceContainerHighest: AppColors.darkSurfaceVariant,
       onSurface: AppColors.darkText,
+      onSurfaceVariant: AppColors.darkTextSecondary,
       error: AppColors.error,
+      errorContainer: AppColors.errorLight,
     ),
-    iconTheme: const IconThemeData(color: AppColors.darkSecondary),
+    iconTheme: const IconThemeData(color: AppColors.darkPrimary),
     fontFamily: 'Cairo',
     cardTheme: CardThemeData(
-      elevation: 4,
-      color: AppColors.darkSurface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      shadowColor: AppColors.shadowDark,
+      color: AppColors.darkCardBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       clipBehavior: Clip.antiAlias,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.darkPrimaryLight,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.darkPrimary,
+        foregroundColor: AppColors.darkBackground,
         elevation: 2,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shadowColor: AppColors.shadowDark,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: const TextStyle(
           fontFamily: 'Cairo',
-          fontSize: 14,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.darkPrimary,
+        side: const BorderSide(color: AppColors.darkPrimary, width: 1.5),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: const TextStyle(
+          fontFamily: 'Cairo',
+          fontSize: 15,
           fontWeight: FontWeight.w600,
         ),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: AppColors.darkPrimaryLight,
+        foregroundColor: AppColors.darkPrimary,
         textStyle: const TextStyle(
           fontFamily: 'Cairo',
           fontSize: 14,
@@ -146,7 +249,8 @@ class AppThemes {
     tabBarTheme: const TabBarThemeData(
       labelColor: AppColors.darkText,
       unselectedLabelColor: AppColors.darkTextSecondary,
-      indicatorColor: AppColors.darkPrimaryLight,
+      indicatorColor: AppColors.darkPrimary,
+      indicatorSize: TabBarIndicatorSize.label,
       labelStyle: TextStyle(
         fontFamily: 'Cairo',
         fontSize: 14,
@@ -158,14 +262,69 @@ class AppThemes {
         fontWeight: FontWeight.w400,
       ),
     ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppColors.darkSurface,
+      selectedItemColor: AppColors.darkPrimary,
+      unselectedItemColor: AppColors.darkTextTertiary,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+      selectedLabelStyle: TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+      ),
+      unselectedLabelStyle: TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColors.darkSurfaceVariant,
+      selectedColor: AppColors.darkPrimary,
+      labelStyle: const TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
     dividerTheme: const DividerThemeData(
       color: AppColors.darkDivider,
       thickness: 1,
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      backgroundColor: AppColors.darkSurface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      backgroundColor: AppColors.darkSurfaceVariant,
+      contentTextStyle: const TextStyle(
+        fontFamily: 'Cairo',
+        fontSize: 14,
+        color: AppColors.darkText,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.darkSurfaceVariant,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.darkPrimary, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      hintStyle: const TextStyle(
+        fontFamily: 'Cairo',
+        color: AppColors.darkTextTertiary,
+      ),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppColors.darkSecondary,
+      foregroundColor: AppColors.darkBackground,
+      elevation: 4,
     ),
   );
 

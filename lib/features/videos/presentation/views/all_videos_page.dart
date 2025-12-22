@@ -289,11 +289,7 @@ class _AllVideosPageState extends State<AllVideosPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VideoPlayerPage(
-                videoId: video.id,
-                title: video.title,
-                publishedAt: video.publishedAt,
-              ),
+              builder: (context) => VideoPlayerPage(video: video),
             ),
           );
         },

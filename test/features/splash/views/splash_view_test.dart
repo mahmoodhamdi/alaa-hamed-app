@@ -1,11 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:eng_alaa_hammed/core/constants/strings.dart';
+import 'package:eng_alaa_hammed/core/error/failures.dart';
 import 'package:eng_alaa_hammed/core/network/dio_client.dart';
+import 'package:eng_alaa_hammed/core/services/secure_storage_service.dart';
 import 'package:eng_alaa_hammed/features/auth/data/repository/google_auth_repository_impl.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/repository/auth_repository.dart';
+import 'package:eng_alaa_hammed/features/auth/domain/usecases/check_auth_use_case.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/usecases/oauth_use_case.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/views/auth_view.dart';
+import 'package:eng_alaa_hammed/features/splash/logic/splash_cubit.dart';
 import 'package:eng_alaa_hammed/features/splash/views/splash_view.dart';
 import 'package:eng_alaa_hammed/features/videos/data/data_sources/youtube_service.dart';
 import 'package:eng_alaa_hammed/features/videos/data/models/paginated_videos_response.dart';
@@ -33,6 +37,10 @@ class MockAuthRepository extends Mock implements AuthRepository {}
 class MockYouTubeService extends Mock implements YouTubeService {}
 
 class MockDioClient extends Mock implements DioClient {}
+
+class MockSecureStorageService extends Mock implements SecureStorageService {}
+
+class MockCheckAuthUseCase extends Mock implements CheckAuthUseCase {}
 
 /// Sets up mocked service locator for splash tests
 Future<void> setupMockedServiceLocator() async {
@@ -78,7 +86,32 @@ Future<void> setupMockedServiceLocator() async {
       () => GoogleAuthRepositoryImpl(getIt<GoogleSignIn>()));
   getIt.registerLazySingleton<OAuthUseCase>(
       () => OAuthUseCase(getIt<AuthRepository>()));
-  getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<OAuthUseCase>()));
+
+  // Mock SecureStorageService
+  final mockSecureStorageService = MockSecureStorageService();
+  when(() => mockSecureStorageService.saveAccessToken(any()))
+      .thenAnswer((_) async {});
+  when(() => mockSecureStorageService.getAccessToken())
+      .thenAnswer((_) async => null);
+  when(() => mockSecureStorageService.hasAccessToken())
+      .thenAnswer((_) async => false);
+  when(() => mockSecureStorageService.clearAll()).thenAnswer((_) async {});
+
+  getIt.registerLazySingleton<SecureStorageService>(
+      () => mockSecureStorageService);
+  getIt.registerFactory<AuthCubit>(() => AuthCubit(
+        oAuthUseCase: getIt<OAuthUseCase>(),
+        secureStorageService: getIt<SecureStorageService>(),
+      ));
+
+  // Mock CheckAuthUseCase and SplashCubit
+  final mockCheckAuthUseCase = MockCheckAuthUseCase();
+  when(() => mockCheckAuthUseCase.call(param: any(named: 'param')))
+      .thenAnswer((_) async => const Left(AuthenticationFailure()));
+
+  getIt.registerLazySingleton<CheckAuthUseCase>(() => mockCheckAuthUseCase);
+  getIt.registerFactory<SplashCubit>(
+      () => SplashCubit(getIt<CheckAuthUseCase>()));
 }
 
 /// Cleans up service locator after tests

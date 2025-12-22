@@ -96,7 +96,9 @@ class AppStrings {
   static const String versionEn = 'Version';
   static const String developer = 'المطور';
   static const String developerEn = 'Developer';
-  static const String developerName = 'Mahmoud Ahmed';
+  static const String developerName = 'محمود حمدي';
+  static const String developerNameEn = 'Mahmoud Hamdi';
+  static const String developerGithub = 'https://github.com/mahmoodhamdi';
   static const String contact = 'تواصل معنا';
   static const String contactEn = 'Contact Us';
   static const String qualityAuto = 'تلقائي';
@@ -108,6 +110,8 @@ class AppStrings {
   static const String failedToLoadPlaylists = 'Failed to load playlists';
   static const String noPlaylistsAvailable = 'لا توجد قوائم تشغيل';
   static const String noPlaylistsAvailableEn = 'No Playlists Available';
+  static const String video = 'فيديو';
+  static const String videoEn = 'Video';
   static const String videoCount = 'فيديو';
   static const String videoCountEn = 'video';
   static const String videosPlural = 'فيديوهات';
@@ -116,4 +120,74 @@ class AppStrings {
   // Home Page Tabs
   static const String home = 'الرئيسية';
   static const String homeEn = 'Home';
+
+  // Favorites
+  static const String favorites = 'المفضلة';
+  static const String favoritesEn = 'Favorites';
+  static const String addToFavorites = 'إضافة للمفضلة';
+  static const String addToFavoritesEn = 'Add to Favorites';
+  static const String removeFromFavorites = 'إزالة من المفضلة';
+  static const String removeFromFavoritesEn = 'Remove from Favorites';
+  static const String noFavorites = 'لا توجد فيديوهات مفضلة';
+  static const String noFavoritesEn = 'No Favorite Videos';
+  static const String noFavoritesDescription = 'أضف فيديوهات للمفضلة لمشاهدتها لاحقاً';
+  static const String noFavoritesDescriptionEn = 'Add videos to favorites to watch later';
+  static const String addedToFavorites = 'تمت الإضافة للمفضلة';
+  static const String addedToFavoritesEn = 'Added to Favorites';
+  static const String removedFromFavorites = 'تمت الإزالة من المفضلة';
+  static const String removedFromFavoritesEn = 'Removed from Favorites';
+
+  // Search
+  static const String search = 'بحث';
+  static const String searchEn = 'Search';
+  static const String searchVideos = 'ابحث عن فيديو...';
+  static const String searchVideosEn = 'Search for a video...';
+  static const String noSearchResults = 'لا توجد نتائج';
+  static const String noSearchResultsEn = 'No Results Found';
+  static const String noSearchResultsDescription = 'جرب كلمات بحث مختلفة';
+  static const String noSearchResultsDescriptionEn = 'Try different search terms';
+  static const String searchResultsCount = 'نتيجة';
+  static const String searchResultsCountEn = 'results';
+
+  // Sort
+  static const String sort = 'ترتيب';
+  static const String sortEn = 'Sort';
+  static const String sortNewest = 'الأحدث أولاً';
+  static const String sortNewestEn = 'Newest First';
+  static const String sortOldest = 'الأقدم أولاً';
+  static const String sortOldestEn = 'Oldest First';
+  static const String sortTitleAZ = 'العنوان أ-ي';
+  static const String sortTitleAZEn = 'Title A-Z';
+  static const String sortTitleZA = 'العنوان ي-أ';
+  static const String sortTitleZAEn = 'Title Z-A';
+
+  // Offline Mode
+  static const String offlineMode = 'وضع عدم الاتصال';
+  static const String offlineModeEn = 'Offline Mode';
+  static const String cachedVideos = 'الفيديوهات المخزنة';
+  static const String cachedVideosEn = 'Cached Videos';
+  static const String showingCachedData = 'عرض البيانات المخزنة';
+  static const String showingCachedDataEn = 'Showing cached data';
+
+  // Watch History
+  static const String watchHistory = 'سجل المشاهدة';
+  static const String watchHistoryEn = 'Watch History';
+  static const String continueWatching = 'متابعة المشاهدة';
+  static const String continueWatchingEn = 'Continue Watching';
+  static const String noWatchHistory = 'لا يوجد سجل مشاهدة';
+  static const String noWatchHistoryEn = 'No Watch History';
+  static const String noWatchHistoryDescription = 'الفيديوهات التي تشاهدها ستظهر هنا';
+  static const String noWatchHistoryDescriptionEn = 'Videos you watch will appear here';
+  static const String resumeFrom = 'استئناف من';
+  static const String resumeFromEn = 'Resume from';
+  static const String watched = 'تمت المشاهدة';
+  static const String watchedEn = 'Watched';
+  static const String inProgress = 'قيد المشاهدة';
+  static const String inProgressEn = 'In Progress';
+  static const String clearHistory = 'مسح السجل';
+  static const String clearHistoryEn = 'Clear History';
+  static const String clearHistoryConfirmation = 'هل أنت متأكد من مسح سجل المشاهدة؟';
+  static const String clearHistoryConfirmationEn = 'Are you sure you want to clear watch history?';
+  static const String removedFromHistory = 'تمت الإزالة من السجل';
+  static const String removedFromHistoryEn = 'Removed from history';
 }

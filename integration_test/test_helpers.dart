@@ -1,10 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:eng_alaa_hammed/core/error/failures.dart';
 import 'package:eng_alaa_hammed/core/network/dio_client.dart';
+import 'package:eng_alaa_hammed/core/services/favorites_service.dart';
+import 'package:eng_alaa_hammed/core/services/secure_storage_service.dart';
 import 'package:eng_alaa_hammed/features/auth/data/repository/google_auth_repository_impl.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/repository/auth_repository.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/usecases/oauth_use_case.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
+import 'package:eng_alaa_hammed/features/favorites/presentation/logic/favorites_cubit.dart';
 import 'package:eng_alaa_hammed/features/videos/data/data_sources/youtube_service.dart';
 import 'package:eng_alaa_hammed/features/videos/data/models/paginated_videos_response.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/entities/video.dart';
@@ -30,6 +33,10 @@ class MockAuthRepository extends Mock implements AuthRepository {}
 class MockYouTubeService extends Mock implements YouTubeService {}
 
 class MockDioClient extends Mock implements DioClient {}
+
+class MockSecureStorageService extends Mock implements SecureStorageService {}
+
+class MockFavoritesService extends Mock implements FavoritesService {}
 
 // Test data
 const testVideos = [
@@ -128,7 +135,39 @@ Future<void> setupMockedServiceLocator({
       () => GoogleAuthRepositoryImpl(getIt<GoogleSignIn>()));
   getIt.registerLazySingleton<OAuthUseCase>(
       () => OAuthUseCase(getIt<AuthRepository>()));
-  getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<OAuthUseCase>()));
+
+  // Mock SecureStorageService
+  final mockSecureStorageService = MockSecureStorageService();
+  when(() => mockSecureStorageService.saveAccessToken(any()))
+      .thenAnswer((_) async {});
+  when(() => mockSecureStorageService.getAccessToken())
+      .thenAnswer((_) async => null);
+  when(() => mockSecureStorageService.hasAccessToken())
+      .thenAnswer((_) async => false);
+  when(() => mockSecureStorageService.clearAll()).thenAnswer((_) async {});
+
+  getIt.registerLazySingleton<SecureStorageService>(
+      () => mockSecureStorageService);
+  getIt.registerFactory<AuthCubit>(() => AuthCubit(
+        oAuthUseCase: getIt<OAuthUseCase>(),
+        secureStorageService: getIt<SecureStorageService>(),
+      ));
+
+  // Mock FavoritesService
+  final mockFavoritesService = MockFavoritesService();
+  when(() => mockFavoritesService.init()).thenAnswer((_) async {});
+  when(() => mockFavoritesService.getFavorites())
+      .thenAnswer((_) async => <Video>[]);
+  when(() => mockFavoritesService.addToFavorites(any())).thenAnswer((_) async {});
+  when(() => mockFavoritesService.removeFromFavorites(any()))
+      .thenAnswer((_) async {});
+  when(() => mockFavoritesService.isFavorite(any()))
+      .thenAnswer((_) async => false);
+  when(() => mockFavoritesService.clearFavorites()).thenAnswer((_) async {});
+
+  getIt.registerLazySingleton<FavoritesService>(() => mockFavoritesService);
+  getIt.registerLazySingleton<FavoritesCubit>(
+      () => FavoritesCubit(getIt<FavoritesService>()));
 }
 
 /// Cleans up service locator after tests

@@ -1,4 +1,5 @@
 import 'package:eng_alaa_hammed/core/enums/status.dart';
+import 'package:eng_alaa_hammed/features/videos/domain/entities/video.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/usecases/get_videos_use_case.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ class VideoCubit extends Cubit<AllVideosState> {
     emit(state.copyWith(
       status: AllVideosStatus.loading,
       clearNextPageToken: true,
+      searchQuery: '',
     ));
 
     final result = await getVideosUseCase(param: const GetVideosParams());
@@ -27,8 +29,10 @@ class VideoCubit extends Cubit<AllVideosState> {
         emit(state.copyWith(
           status: AllVideosStatus.loaded,
           videos: response.videos,
+          allVideos: response.videos,
           nextPageToken: response.nextPageToken,
           totalResults: response.totalResults,
+          isFromCache: response.isFromCache,
         ));
       },
     );
@@ -44,11 +48,17 @@ class VideoCubit extends Cubit<AllVideosState> {
         ));
       },
       (response) {
+        final videos = response.videos;
+        final filteredVideos = state.searchQuery.isEmpty
+            ? videos
+            : _filterVideos(videos, state.searchQuery);
         emit(state.copyWith(
           status: AllVideosStatus.loaded,
-          videos: response.videos,
+          videos: filteredVideos,
+          allVideos: videos,
           nextPageToken: response.nextPageToken,
           totalResults: response.totalResults,
+          isFromCache: response.isFromCache,
         ));
       },
     );
@@ -72,13 +82,53 @@ class VideoCubit extends Cubit<AllVideosState> {
         ));
       },
       (response) {
+        final allVideos = [...state.allVideos, ...response.videos];
+        final filteredVideos = state.searchQuery.isEmpty
+            ? allVideos
+            : _filterVideos(allVideos, state.searchQuery);
         emit(state.copyWith(
           isLoadingMore: false,
-          videos: [...state.videos, ...response.videos],
+          videos: filteredVideos,
+          allVideos: allVideos,
           nextPageToken: response.nextPageToken,
           totalResults: response.totalResults,
         ));
       },
     );
+  }
+
+  /// Search videos by title or description
+  void searchVideos(String query) {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery == state.searchQuery) return;
+
+    if (trimmedQuery.isEmpty) {
+      emit(state.copyWith(
+        videos: state.allVideos,
+        searchQuery: '',
+      ));
+    } else {
+      final filteredVideos = _filterVideos(state.allVideos, trimmedQuery);
+      emit(state.copyWith(
+        videos: filteredVideos,
+        searchQuery: trimmedQuery,
+      ));
+    }
+  }
+
+  /// Clear search and show all videos
+  void clearSearch() {
+    emit(state.copyWith(
+      videos: state.allVideos,
+      searchQuery: '',
+    ));
+  }
+
+  List<Video> _filterVideos(List<Video> videos, String query) {
+    final lowerQuery = query.toLowerCase();
+    return videos.where((video) {
+      return video.title.toLowerCase().contains(lowerQuery) ||
+          video.description.toLowerCase().contains(lowerQuery);
+    }).toList();
   }
 }

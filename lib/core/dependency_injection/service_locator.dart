@@ -1,10 +1,16 @@
 import 'package:eng_alaa_hammed/core/helpers/logger_helper.dart';
 import 'package:eng_alaa_hammed/core/network/dio_client.dart';
+import 'package:eng_alaa_hammed/core/services/connectivity_service.dart';
+import 'package:eng_alaa_hammed/core/services/favorites_service.dart';
+import 'package:eng_alaa_hammed/core/services/secure_storage_service.dart';
+import 'package:eng_alaa_hammed/core/services/video_cache_service.dart';
+import 'package:eng_alaa_hammed/core/services/watch_history_service.dart';
 import 'package:eng_alaa_hammed/features/auth/data/repository/google_auth_repository_impl.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/repository/auth_repository.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/usecases/check_auth_use_case.dart';
 import 'package:eng_alaa_hammed/features/auth/domain/usecases/oauth_use_case.dart';
 import 'package:eng_alaa_hammed/features/auth/presentation/logic/auth_cubit.dart';
+import 'package:eng_alaa_hammed/features/favorites/presentation/logic/favorites_cubit.dart';
 import 'package:eng_alaa_hammed/features/playlists/data/repository/playlist_repository_impl.dart';
 import 'package:eng_alaa_hammed/features/playlists/domain/repository/playlist_repository.dart';
 import 'package:eng_alaa_hammed/features/playlists/domain/usecases/get_playlist_videos_use_case.dart';
@@ -20,6 +26,7 @@ import 'package:eng_alaa_hammed/features/videos/data/repository/video_repository
 import 'package:eng_alaa_hammed/features/videos/domain/repository/video_repository.dart';
 import 'package:eng_alaa_hammed/features/videos/domain/usecases/get_videos_use_case.dart';
 import 'package:eng_alaa_hammed/features/videos/presentation/logic/all_videos_cubit.dart';
+import 'package:eng_alaa_hammed/features/watch_history/presentation/logic/watch_history_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +42,34 @@ Future<void> setupServiceLocator() async {
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
   LoggerHelper.info('SharedPreferences registered.');
 
+  // Registering SecureStorageService
+  getIt.registerLazySingleton<SecureStorageService>(
+      () => SecureStorageService());
+  LoggerHelper.info('SecureStorageService registered.');
+
+  // Registering ConnectivityService
+  getIt.registerLazySingleton<ConnectivityService>(
+      () => ConnectivityService());
+  LoggerHelper.info('ConnectivityService registered.');
+
+  // Registering VideoCacheService
+  final videoCacheService = VideoCacheService();
+  await videoCacheService.init();
+  getIt.registerSingleton<VideoCacheService>(videoCacheService);
+  LoggerHelper.info('VideoCacheService registered.');
+
+  // Registering FavoritesService
+  final favoritesService = FavoritesService();
+  await favoritesService.init();
+  getIt.registerSingleton<FavoritesService>(favoritesService);
+  LoggerHelper.info('FavoritesService registered.');
+
+  // Registering WatchHistoryService
+  final watchHistoryService = WatchHistoryService();
+  await watchHistoryService.init();
+  getIt.registerSingleton<WatchHistoryService>(watchHistoryService);
+  LoggerHelper.info('WatchHistoryService registered.');
+
   // Registering DioClient
   getIt.registerLazySingleton<DioClient>(() => DioClient());
   LoggerHelper.info('DioClient registered.');
@@ -45,8 +80,11 @@ Future<void> setupServiceLocator() async {
   LoggerHelper.info('YouTubeService registered.');
 
   // Registering VideoRepository
-  getIt.registerLazySingleton<VideoRepository>(
-      () => VideoRepositoryImpl(youTubeService: getIt<YouTubeService>()));
+  getIt.registerLazySingleton<VideoRepository>(() => VideoRepositoryImpl(
+        youTubeService: getIt<YouTubeService>(),
+        cacheService: getIt<VideoCacheService>(),
+        connectivityService: getIt<ConnectivityService>(),
+      ));
   LoggerHelper.info('VideoRepository registered.');
 
   // Registering GetVideosUseCase
@@ -105,7 +143,10 @@ Future<void> setupServiceLocator() async {
   LoggerHelper.info('CheckAuthUseCase registered.');
 
   // Registering AuthCubit
-  getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<OAuthUseCase>()));
+  getIt.registerFactory<AuthCubit>(() => AuthCubit(
+        oAuthUseCase: getIt<OAuthUseCase>(),
+        secureStorageService: getIt<SecureStorageService>(),
+      ));
   LoggerHelper.info('AuthCubit registered.');
 
   // Registering SplashCubit
@@ -124,6 +165,16 @@ Future<void> setupServiceLocator() async {
   getIt.registerLazySingleton<SettingsCubit>(
       () => SettingsCubit(getIt<SettingsRepository>()));
   LoggerHelper.info('SettingsCubit registered.');
+
+  // Registering FavoritesCubit (singleton to share state across app)
+  getIt.registerLazySingleton<FavoritesCubit>(
+      () => FavoritesCubit(getIt<FavoritesService>()));
+  LoggerHelper.info('FavoritesCubit registered.');
+
+  // Registering WatchHistoryCubit (singleton to share state across app)
+  getIt.registerLazySingleton<WatchHistoryCubit>(
+      () => WatchHistoryCubit(getIt<WatchHistoryService>()));
+  LoggerHelper.info('WatchHistoryCubit registered.');
 
   LoggerHelper.debug('Service locator setup completed.');
 }

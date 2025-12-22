@@ -1,23 +1,30 @@
+import 'dart:async';
+
 import 'package:eng_alaa_hammed/core/constants/strings.dart';
+import 'package:eng_alaa_hammed/core/dependency_injection/service_locator.dart';
+import 'package:eng_alaa_hammed/features/favorites/presentation/logic/favorites_cubit.dart';
+import 'package:eng_alaa_hammed/features/favorites/presentation/logic/favorites_state.dart';
+import 'package:eng_alaa_hammed/features/videos/domain/entities/video.dart';
+import 'package:eng_alaa_hammed/features/watch_history/presentation/logic/watch_history_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoPlayerPage extends StatefulWidget {
-  final String videoId;
-  final String title;
-  final String publishedAt;
-  final String? description;
+  final Video video;
 
   const VideoPlayerPage({
     super.key,
-    required this.videoId,
-    required this.title,
-    required this.publishedAt,
-    this.description,
+    required this.video,
   });
+
+  String get videoId => video.id;
+  String get title => video.title;
+  String get publishedAt => video.publishedAt;
+  String? get description => video.description;
 
   @override
   State<VideoPlayerPage> createState() => _VideoPlayerPageState();
@@ -27,20 +34,35 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   late YoutubePlayerController _controller;
   bool _isFullScreen = false;
   bool _isDescriptionExpanded = false;
+  Timer? _progressTimer;
+  int _lastSavedPosition = 0;
+  bool _hasAddedToHistory = false;
 
   @override
   void initState() {
     super.initState();
+
+    // Get last position from watch history
+    final watchHistoryCubit = getIt<WatchHistoryCubit>();
+    final lastPosition = watchHistoryCubit.getLastPosition(widget.video.id);
+
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
-      flags: const YoutubePlayerFlags(
+      flags: YoutubePlayerFlags(
         autoPlay: true,
         mute: false,
         enableCaption: true,
         hideControls: false,
         forceHD: true,
+        startAt: lastPosition ?? 0,
       ),
     )..addListener(_onPlayerStateChange);
+
+    // Start progress tracking timer
+    _progressTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _saveProgress(),
+    );
   }
 
   void _onPlayerStateChange() {
@@ -49,10 +71,47 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         _isFullScreen = _controller.value.isFullScreen;
       });
     }
+
+    // Add to history when video starts playing
+    if (_controller.value.isPlaying && !_hasAddedToHistory) {
+      _hasAddedToHistory = true;
+      _addToWatchHistory();
+    }
+  }
+
+  void _addToWatchHistory() {
+    final watchHistoryCubit = getIt<WatchHistoryCubit>();
+    final duration = _controller.metadata.duration.inSeconds;
+    watchHistoryCubit.addToHistory(
+      widget.video,
+      lastPositionSeconds: _controller.value.position.inSeconds,
+      durationSeconds: duration,
+    );
+  }
+
+  void _saveProgress() {
+    if (!mounted) return;
+
+    final currentPosition = _controller.value.position.inSeconds;
+    final duration = _controller.metadata.duration.inSeconds;
+
+    // Only save if position has changed significantly (more than 3 seconds)
+    if ((currentPosition - _lastSavedPosition).abs() > 3 && duration > 0) {
+      _lastSavedPosition = currentPosition;
+      final watchHistoryCubit = getIt<WatchHistoryCubit>();
+      watchHistoryCubit.updateProgress(
+        widget.video.id,
+        lastPositionSeconds: currentPosition,
+        durationSeconds: duration,
+      );
+    }
   }
 
   @override
   void dispose() {
+    // Save final progress before disposing
+    _saveProgress();
+    _progressTimer?.cancel();
     _controller.removeListener(_onPlayerStateChange);
     _controller.dispose();
     // Reset orientation when leaving
@@ -164,6 +223,25 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            BlocBuilder<FavoritesCubit, FavoritesState>(
+                              bloc: getIt<FavoritesCubit>(),
+                              builder: (context, state) {
+                                final isFavorite =
+                                    state.isFavorite(widget.video.id);
+                                return _buildActionButton(
+                                  context,
+                                  isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  isFavorite
+                                      ? AppStrings.removeFromFavorites
+                                      : AppStrings.addToFavorites,
+                                  () => getIt<FavoritesCubit>()
+                                      .toggleFavorite(widget.video),
+                                  isActive: isFavorite,
+                                );
+                              },
+                            ),
                             _buildActionButton(
                               context,
                               Icons.share,
@@ -217,26 +295,35 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     BuildContext context,
     IconData icon,
     String label,
-    VoidCallback onTap,
-  ) {
+    VoidCallback onTap, {
+    bool isActive = false,
+  }) {
     final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: theme.primaryColor),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.primaryColor,
-              ),
+    final color = isActive ? Colors.red : theme.primaryColor;
+    return Semantics(
+      label: label,
+      button: true,
+      child: Tooltip(
+        message: label,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, color: color),
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: color,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
