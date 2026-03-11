@@ -23,7 +23,7 @@ class GoogleAuthRepositoryImpl implements AuthRepository {
       LoggerHelper.info(
           'Google sign-in successful, retrieving authentication token...');
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+          googleUser.authentication;
 
       final accessToken = googleAuth.accessToken;
       if (accessToken != null) {
@@ -53,7 +53,7 @@ class GoogleAuthRepositoryImpl implements AuthRepository {
 
       LoggerHelper.info('Silent sign-in successful, retrieving token...');
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+          googleUser.authentication;
 
       final accessToken = googleAuth.accessToken;
       if (accessToken != null) {

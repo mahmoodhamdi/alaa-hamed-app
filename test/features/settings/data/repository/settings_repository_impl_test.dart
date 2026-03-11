@@ -119,7 +119,7 @@ void main() {
     group('signOut', () {
       test('should call GoogleSignIn.signOut', () async {
         when(() => mockGoogleSignIn.signOut())
-            .thenAnswer((_) async => null);
+            .thenAnswer((_) async {});
 
         await repository.signOut();
 
